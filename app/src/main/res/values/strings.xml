@@ -5,6 +5,124 @@
     <string name="title_">Ещё</string>
     <string name="title_user">Личный кабинет</string>
 
+    <string-array name="pairlist">
+        <item>Валютная пара</item>
+        <item>BTC/USD</item>
+        <item>BTC/EUR</item>
+        <item>BTC/EUR</item>
+        <item>BTC/RUB</item>
+        <item>BTC/UAH</item>
+        <item>BTC/PLN</item>
+        <item>BCH/BTC</item>
+        <item>EOS/BTC</item>
+        <item>EOS/USD</item>
+        <item>BTG/BTC</item>
+        <item>BTG/USD</item>
+        <item>BCH/USD</item>
+        <item>HBZ/BTC</item>
+        <item>HBZ/ETH</item>
+
+        <item>HBZ/USD</item>
+        <item>BCH/RUB</item>
+        <item>BCH/ETH</item>
+        <item>DASH/BTC</item>
+        <item>DASH/USD</item>
+        <item>DASH/RUB</item>
+        <item>ETH/BTC</item>
+        <item>ETH/LTC</item>
+        <item>ETH/USD</item>
+        <item>ETH/EUR</item>
+        <item>ETH/RUB</item>
+        <item>ETH/UAH</item>
+        <item>ETH/PLN</item>
+        <item>ETC/BTC</item>
+        <item>ETC/USD</item>
+        <item>ETC/RUB</item>
+        <item>LTC/BTC</item>
+        <item>LTC/USD</item>
+        <item>LTC/EUR</item>
+        <item>LTC/RUB</item>
+        <item>ZEC/BTC</item>
+        <item>ZEC/USD</item>
+        <item>ZEC/EUR</item>
+        <item>ZEC/RUB</item>
+        <item>XRP/BTC</item>
+        <item>XRP/USD</item>
+        <item>XRP/RUB</item>
+        <item>XMR/BTC</item>
+        <item>XMR/USD</item>
+        <item>XMR/EUR</item>
+        <item>BTC/USDT</item>
+        <item>ETH/USDT</item>
+        <item>USDT/USD</item>
+        <item>USDT/RUB</item>
+        <item>USD/RUB</item>
+        <item>DOGE/BTC</item>
+        <item>WAVES/BTC</item>
+        <item>WAVES/RUB</item>
+        <item>KICK/BTC</item>
+        <item>KICK/ETH</item>
+    </string-array>
+    <string-array name="pairlink">
+        <item>Сыллка на пару</item>
+        <item>https://api.exmo.com/v1/trades/?pair=BTC_USD</item>
+        <item>https://api.exmo.com/v1/trades/?pair=BTC/EUR</item>
+        <item>https://api.exmo.com/v1/trades/?pair=BTC/EUR</item>
+        <item>https://api.exmo.com/v1/trades/?pair=BTC/RUB</item>
+        <item>https://api.exmo.com/v1/trades/?pair=BTC/UAH</item>
+        <item>https://api.exmo.com/v1/trades/?pair=BTC/PLN</item>
+        <item>https://api.exmo.com/v1/trades/?pair=BCH/BTC</item>
+        <item>https://api.exmo.com/v1/trades/?pair=EOS/BTC</item>
+        <item>https://api.exmo.com/v1/trades/?pair=EOS/USD</item>
+        <item>https://api.exmo.com/v1/trades/?pair=BTG/BTC</item>
+        <item>https://api.exmo.com/v1/trades/?pair=BTG/USD</item>
+        <item>https://api.exmo.com/v1/trades/?pair=BCH/USD</item>
+        <item>https://api.exmo.com/v1/trades/?pair=HBZ/BTC</item>
+        <item>https://api.exmo.com/v1/trades/?pair=HBZ/ETH</item>
+
+        <item>https://api.exmo.com/v1/trades/?pair=HBZ/USD</item>
+        <item>https://api.exmo.com/v1/trades/?pair=BCH/RUB</item>
+        <item>https://api.exmo.com/v1/trades/?pair=BCH/ETH</item>
+        <item>https://api.exmo.com/v1/trades/?pair=DASH/BTC</item>
+        <item>https://api.exmo.com/v1/trades/?pair=DASH/USD</item>
+        <item>https://api.exmo.com/v1/trades/?pair=DASH/RUB</item>
+
+        <item>https://api.exmo.com/v1/trades/?pair=ETH/BTC</item>
+        <item>https://api.exmo.com/v1/trades/?pair=ETH/LTC</item>
+        <item>https://api.exmo.com/v1/trades/?pair=ETH/USD</item>
+        <item>https://api.exmo.com/v1/trades/?pair=ETH/EUR</item>
+        <item>https://api.exmo.com/v1/trades/?pair=ETH/RUB</item>
+        <item>https://api.exmo.com/v1/trades/?pair=ETH/UAH</item>
+        <item>https://api.exmo.com/v1/trades/?pair=ETH/PLN</item>
+        <item>https://api.exmo.com/v1/trades/?pair=ETC/BTC</item>
+        <item>https://api.exmo.com/v1/trades/?pair=ETC/USD</item>
+        <item>https://api.exmo.com/v1/trades/?pair=ETC/RUB</item>
+        <item>https://api.exmo.com/v1/trades/?pair=LTC/BTC</item>
+        <item>https://api.exmo.com/v1/trades/?pair=LTC/USD</item>
+        <item>https://api.exmo.com/v1/trades/?pair=LTC/EUR</item>
+        <item>https://api.exmo.com/v1/trades/?pair=LTC/RUB</item>
+        <item>https://api.exmo.com/v1/trades/?pair=ZEC/BTC</item>
+        <item>https://api.exmo.com/v1/trades/?pair=ZEC/USD</item>
+        <item>https://api.exmo.com/v1/trades/?pair=ZEC/EUR</item>
+        <item>https://api.exmo.com/v1/trades/?pair=ZEC/RUB</item>
+        <item>https://api.exmo.com/v1/trades/?pair=XRP/BTC</item>
+        <item>https://api.exmo.com/v1/trades/?pair=XRP/USD</item>
+        <item>https://api.exmo.com/v1/trades/?pair=XRP/RUB</item>
+        <item>https://api.exmo.com/v1/trades/?pair=XMR/BTC</item>
+        <item>https://api.exmo.com/v1/trades/?pair=XMR/USD</item>
+        <item>https://api.exmo.com/v1/trades/?pair=XMR/EUR</item>
+        <item>https://api.exmo.com/v1/trades/?pair=BTC/USDT</item>
+        <item>https://api.exmo.com/v1/trades/?pair=ETH/USDT</item>
+        <item>https://api.exmo.com/v1/trades/?pair=USDT/USD</item>
+        <item>https://api.exmo.com/v1/trades/?pair=USDT/RUB</item>
+        <item>https://api.exmo.com/v1/trades/?pair=USD/RUB</item>
+        <item>https://api.exmo.com/v1/trades/?pair=DOGE/BTC</item>
+        <item>https://api.exmo.com/v1/trades/?pair=WAVES/BTC</item>
+        <item>https://api.exmo.com/v1/trades/?pair=WAVES/RUB</item>
+        <item>https://api.exmo.com/v1/trades/?pair=KICK/BTC</item>
+        <item>https://api.exmo.com/v1/trades/?pair=KICK/ETH</item>
+    </string-array>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
