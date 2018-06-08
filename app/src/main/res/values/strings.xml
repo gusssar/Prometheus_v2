@@ -123,6 +123,15 @@
         <item>https://api.exmo.com/v1/trades/?pair=KICK/ETH</item>
     </string-array>
 
+    <string-array name="viewlist">
+        <item>Выберите...</item>
+        <item>Список валют</item>
+        <item>Валютные пары</item>
+        <item>Статистика цен</item>
+        <item>Книга ордеров</item>
+        <item>Список сделок</item>
+    </string-array>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
