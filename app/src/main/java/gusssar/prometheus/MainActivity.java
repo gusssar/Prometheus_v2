@@ -13,7 +13,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
 
-    private TextView textView;
+    //private TextView textView;
     final String LOG_TAG = "myLogs";
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -28,22 +28,22 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_trades:
                     transaction.replace(R.id.main_frag, new TradesFragment()).commit();
-                    textView.setText(R.string.title_trades);
+                    //textView.setText(R.string.title_trades);
                     Log.d(LOG_TAG, "MainActivity trades");
                     return true;
                 case R.id.navigation_news:
                     transaction.replace(R.id.main_frag, new NewsFragment()).commit();
-                    textView.setText(R.string.title_news);
+                    //textView.setText(R.string.title_news);
                     Log.d(LOG_TAG, "MainActivity news");
                     return true;
                 case R.id.navigation_:
                     transaction.replace(R.id.main_frag, new _Fragment()).commit();
-                    textView.setText(R.string.title_);
+                    //textView.setText(R.string.title_);
                     Log.d(LOG_TAG, "MainActivity ___");
                     return true;
                 case R.id.navigation_user:
                     transaction.replace(R.id.main_frag, new UserFragment()).commit();
-                    textView.setText(R.string.title_user);
+                    //textView.setText(R.string.title_user);
                     Log.d(LOG_TAG, "MainActivity user");
                     return true;
             }
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = (TextView) findViewById(R.id.textView);
+        //textView = (TextView) findViewById(R.id.textView);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 

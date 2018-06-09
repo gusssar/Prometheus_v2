@@ -21,7 +21,6 @@
         <item>BCH/USD</item>
         <item>HBZ/BTC</item>
         <item>HBZ/ETH</item>
-
         <item>HBZ/USD</item>
         <item>BCH/RUB</item>
         <item>BCH/ETH</item>
@@ -131,7 +130,10 @@
         <item>Книга ордеров</item>
         <item>Список сделок</item>
     </string-array>
-
+    <string-array name="waitAr">
+        <item>Загрузка\.\.\.</item>
+    </string-array>
+    <string name="waitStr">Загрузка\.\.\.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -42,7 +42,7 @@ public class TradesFragment extends Fragment {
         String[] pairList = getResources().getStringArray(R.array.pairlist);
         String[] pairLink = getResources().getStringArray(R.array.pairlink);
         for (int i = 1; i <= 20; i++) {
-            products.add(new Product(pairList[i], pairLink[i], pairList[i]));
+            products.add(new Product(pairList[i], pairList[i], pairList[i]));
         }
     }
 
