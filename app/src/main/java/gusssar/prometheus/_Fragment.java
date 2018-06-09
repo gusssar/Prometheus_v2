@@ -6,143 +6,126 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ListView;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.io.InputStream;
+import android.util.Log;
 
-import javax.net.ssl.HttpsURLConnection;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.ArrayList;
 
 public class _Fragment extends Fragment {
-    TextView LogContView;
-    TextView HumContView;
-    String LogContText = null;
-    String HumContText = null;
+
+    public ArrayList<Product> coinArray = new ArrayList<>();
+    public ArrayList<Product> waitArray = new ArrayList<>();
+    TradeListAdapter tradeListAdapter;
+
+    public static String LOG_TAG = "my_log";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
     }
 
-    //@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment__, container, false);
-        LogContView = (TextView) view.findViewById(R.id.LogContView);
-        HumContView = (TextView) view.findViewById(R.id.HumContView);
+        ListView listView = (ListView) view.findViewById(R.id.list_user);
 
-        Button OnPostBtn = (Button) view.findViewById(R.id.OnPostBtn);
-
-        OnPostBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (LogContText == null) {
-                    LogContView.setText("Загрузка...");
-                    new _Fragment.ProgressTask().execute("https://api.exmo.com/v1/currency/");
-                    //new _Fragment.ProgressTask().execute("http://androiddocs.ru/api/friends.json");
-                }
-            }
-        });
-
-     //   Button OnTranceBtn = (Button) view.findViewById(R.id.OnTranceBtn);
-//
-     //   OnTranceBtn.setOnClickListener(new View.OnClickListener() {
-     //       @Override
-     //       public void onClick(View v) {
-     //           if (LogContText == null) {
-     //               // HumContView.setText("Пусто...");
-     //               Toast.makeText(getActivity(), "Запросите данные", Toast.LENGTH_SHORT).show();
-     //           }
-     //           else {
-     //               HumContView.setText("Для людей:\n"); //очистка TextView
-     //               /**необходима доработка для объединения регулярных выражений(изучить синтаксис)*/
-     //               String pattern1 = "\"";
-     //               String pattern2 = "\\[";
-     //               String pattern3 = "]";
-     //               String chpattern = "";
-//
-     //               Pattern ptrn1 = Pattern.compile(pattern1);
-     //               Pattern ptrn2 = Pattern.compile(pattern2);
-     //               Pattern ptrn3 = Pattern.compile(pattern3);
-     //               Matcher mtch1 = ptrn1.matcher(LogContText);
-     //               String inputString1 = mtch1.replaceAll(chpattern);
-     //               Matcher mtch2 = ptrn2.matcher(inputString1);
-     //               String inputString2 = mtch2.replaceAll(chpattern);
-     //               Matcher mtch3 = ptrn3.matcher(inputString2);
-     //               String inputString3 = mtch3.replaceAll(chpattern);
-//
-     //               Pattern pattern = Pattern.compile(","); //условие для разделения на массив
-//
-     //               String[] mas = pattern.split(inputString3);
-     //               for (int i=0; i<mas.length;i++)
-     //                   HumContView.append(mas[i]+"\n");
-     //               Toast.makeText(getActivity(), "Данные преобразованы", Toast.LENGTH_SHORT).show();
-     //           }
-//
-     //       }
-//
-     //   });
-
-        //       Button GoToPairSetBtn = (Button) view.findViewById(R.id.GoToPairSet);
-        //       GoToPairSetBtn.setOnClickListener(new View.OnClickListener() {
-        //           @Override
-        //           public void onClick(View v) {
-        //               Intent intent = new Intent(this, PairSettingsActivity.class);
-        //               startActivity(intent);
-        //           }
-        //       });
+        new ProgressTask().execute();
+        listView.setAdapter(tradeListAdapter);
 
         return view;
     }
 
-    private class ProgressTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... path) {
-            String content;
-            try{
-                content = getContent(path[0]);
-            }
-            catch (IOException ex){
-                content = ex.getMessage();
-            }
-            return content;
-        }
+    private class ProgressTask extends AsyncTask<Void, Void, String> {
+        HttpURLConnection urlConnection = null;
+        BufferedReader reader = null;
+        String resultJson = "";
 
         @Override
-        protected void onPostExecute(String content) {
-            LogContText=content;
-            LogContView.setText(content);
-            Toast.makeText(getActivity(), "Данные загружены", Toast.LENGTH_SHORT).show();
-        }
-
-        private String getContent(String path) throws IOException {
-            BufferedReader reader=null;
+        protected void onPreExecute() {
+            super.onPreExecute();
             try {
-                URL url=new URL(path);
-                HttpsURLConnection c=(HttpsURLConnection)url.openConnection();
-                c.setRequestMethod("POST");
-                //c.setRequestMethod("GET");
-                c.setReadTimeout(10000);
-                c.connect();
-                reader= new BufferedReader(new InputStreamReader(c.getInputStream()));
-                StringBuilder buf=new StringBuilder();
-                String line=null;
-                while ((line=reader.readLine()) != null) {
-                    buf.append(line + "\n");
-                }
-                return(buf.toString());
+                String waitStr = getResources().getString(R.string.waitStr);
+                waitArray.add(new Product(waitStr,null,null));
+                tradeListAdapter =  new TradeListAdapter(getActivity(),waitArray);
+            }catch (Exception e) {
+                e.printStackTrace();
             }
-            finally {
-                if (reader != null) {
-                    reader.close();
+
+        }
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                URL url = new URL("https://api.exmo.com/v1/trades/?pair=BTC_USD");
+
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line);
                 }
+
+                resultJson = buffer.toString();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+
+        @Override
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+            Log.d(LOG_TAG, "Весь текст: " + strJson);
+
+
+                try {
+                    JSONObject dataJsonObj = new JSONObject(strJson);
+                    JSONArray friends = dataJsonObj.getJSONArray("BTC_USD");
+
+                    for (int j=0; j < 20; j++) {
+                        JSONObject lastTrans = friends.getJSONObject(j);
+                        String typeTr = lastTrans.getString("type");
+                        Log.d(LOG_TAG, "Тип транзакции: " + typeTr);
+                        String priceTr = lastTrans.getString("price");
+                        Log.d(LOG_TAG, "Тип транзакции: " + priceTr);
+                        coinArray.add(new Product("BTC_USD",typeTr,priceTr));
+                    }
+                    ListView listView = (ListView)getView().findViewById(R.id.list_user);
+                    tradeListAdapter = new TradeListAdapter(getActivity(), coinArray);
+                    listView.setAdapter(tradeListAdapter);
+
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     }
 }
+/**
+{"BTC_USD":[
+        {"trade_id":62105171,
+            "type":"buy",
+            "quantity":"0.01349674",
+            "price":"7608.487081",
+            "amount":"102.68977192",
+            "date":1528552877
+        }
+ */
