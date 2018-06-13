@@ -36,7 +36,7 @@ public class TradesFragment extends Fragment {
 
     public static String LOG_TAG = "my_log";
     public String setUrl = "";
-    //private ProgressBar progressBar;
+    protected ProgressBar proBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,29 +50,21 @@ public class TradesFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_trades, container, false);
         ListView listView = (ListView) view.findViewById(R.id.list_trades);
-        ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-
-        String pairLink = getResources().getString(R.string.pairLink);
-        String[] pairListForLink = getResources().getStringArray(R.array.pairListForLink);
-        String setUrl = "";
+        ProgressBar proBar = (ProgressBar) view.findViewById(R.id.prog_bar);
+        //proBar.setProgress(0);
+        proBar.setMax(52);
+        //String pairLink = getResources().getString(R.string.pairLink);
+        //String[] pairListForLink = getResources().getStringArray(R.array.pairListForLink);
+        //String setUrl = "";
              //Log.d(LOG_TAG, "onCreateView  setUrl =" + setUrl);
              //Log.d(LOG_TAG, "onCreateView  line =" + line);
+
             new ProgressTask().execute();
 
         listView.setAdapter(tradeListAdapter);
         return view;
     }
 
-   ////заполнение массива
-   //void fillData() {
-   //    String[] pairList = getResources().getStringArray(R.array.pairlist);
-   //    String[] pairLink = getResources().getStringArray(R.array.pairlink);
-   //    for (int i = 1; i <= 20; i++) {
-   //        products.add(new Product(pairList[i], pairList[i], pairList[i]));
-   //    }
-   //}
-
-    //private class ProgressTask extends AsyncTask<Void, Void, ArrayList> {
     private class ProgressTask extends AsyncTask<Void, Integer, ArrayList> {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -85,29 +77,28 @@ public class TradesFragment extends Fragment {
             super.onPreExecute();
             try {
                 String waitStr = getResources().getString(R.string.waitStr);
-                //Log.d(LOG_TAG, "onPreExecute  waitStr =" + waitStr);
-                //Log.d(LOG_TAG, "onPreExecute  line =" + line);
                 waitArray.add(new Product(waitStr,null,null));
                 tradeListAdapter =  new TradeListAdapter(getActivity(),waitArray);
+                for (int k=0; k<=10; k++){
+                    Thread.sleep(100);
+                    proBar.setProgress(k);
+                }
             }catch (Exception e) {
                 e.printStackTrace();
             }
 
         }
         @Override
-        //protected String doInBackground(Void... params) {
         protected ArrayList<Product> doInBackground(Void... params) {
 
                 String pairLink = getResources().getString(R.string.pairLink);
                 String[] pairListForLink = getResources().getStringArray(R.array.pairListForLink);
 
                 try {
-                    for (int p=0; p < 53; p++) {
+                    //for (int p=0; p < 53; p++) {
+                    for (int p=0; p <= 52; p++) {
                         setUrl = pairLink + pairListForLink[p];
-                        //URL url = new URL("https://api.exmo.com/v1/trades/?pair=BTC_USD");
                         URL url = new URL(setUrl);
-                        //Log.d(LOG_TAG, "doInBackground  url =" + url);
-                        //Log.d(LOG_TAG, "doInBackground  line =" + line);
                         urlConnection = (HttpURLConnection) url.openConnection();
                         urlConnection.setRequestMethod("GET");
                         urlConnection.connect();
@@ -121,12 +112,10 @@ public class TradesFragment extends Fragment {
                         resultJson = buffer.toString();
                         Log.d(LOG_TAG, "doInBackground  resultJson =" + resultJson);
 
-                        //проба переноса из onPostExecute
                         String price_buy = "";
                         String price_sell = "";
 
                         JSONObject dataJsonObj = new JSONObject(resultJson);
-                        //JSONArray fullTradesArr = dataJsonObj.getJSONArray("BTC_USD");
                         JSONArray fullTradesArr = dataJsonObj.getJSONArray(pairListForLink[p]);
 
                         for (int i = 0; i < 35; i++) {
@@ -148,33 +137,35 @@ public class TradesFragment extends Fragment {
                             }
                         }
                         coinArray.add(new Product(pairListForLink[p], price_sell, price_buy));
-                        //publishProgress(p);
+                        publishProgress(p);
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            //return resultJson;
             return coinArray;
         }
 
         @Override
         protected void onPostExecute(ArrayList ALLJson) {
-        //protected void onPostExecute(Void ALLJson) {
             super.onPostExecute(ALLJson);
             Log.d(LOG_TAG, "Весь текст: " + ALLJson);
 
             ListView listView = (ListView)getView().findViewById(R.id.list_trades);
             tradeListAdapter = new TradeListAdapter(getActivity(), ALLJson);
             listView.setAdapter(tradeListAdapter);
-            //progressBar.setProgress(0);
         }
 
-//        @Override
-//        protected void onProgressUpdate(Integer... values) {
-//            super.onProgressUpdate(values);
-//
-//            progressBar.setProgress(values[0]);
-//        }
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            try {
+                proBar.setProgress(values[0]);
+                Log.d(LOG_TAG, "бляяяяяя ");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 

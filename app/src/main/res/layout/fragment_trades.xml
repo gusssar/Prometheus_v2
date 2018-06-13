@@ -40,7 +40,7 @@
         android:text="Продажа"/>
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/prog_bar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
         android:layout_marginEnd="5dp"/>
     <ListView
         android:id="@+id/list_trades"
-        android:layout_below="@id/progressBar"
+        android:layout_below="@id/prog_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
