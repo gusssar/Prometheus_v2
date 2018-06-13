@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -35,7 +36,7 @@ public class TradesFragment extends Fragment {
 
     public static String LOG_TAG = "my_log";
     public String setUrl = "";
-    public int line=0;
+    //private ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,17 +50,14 @@ public class TradesFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_trades, container, false);
         ListView listView = (ListView) view.findViewById(R.id.list_trades);
+        ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
         String pairLink = getResources().getString(R.string.pairLink);
         String[] pairListForLink = getResources().getStringArray(R.array.pairListForLink);
-        //String setUrl = "";
-         for (line=0; line<3; line++){
-            setUrl = pairLink + pairListForLink[line];
-             Log.d(LOG_TAG, "onCreateView  setUrl =" + setUrl);
-             Log.d(LOG_TAG, "onCreateView  line =" + line);
+        String setUrl = "";
+             //Log.d(LOG_TAG, "onCreateView  setUrl =" + setUrl);
+             //Log.d(LOG_TAG, "onCreateView  line =" + line);
             new ProgressTask().execute();
-         }
-        //new ProgressTask().execute();
 
         listView.setAdapter(tradeListAdapter);
         return view;
@@ -74,18 +72,21 @@ public class TradesFragment extends Fragment {
    //    }
    //}
 
-    private class ProgressTask extends AsyncTask<Void, Void, String> {
+    //private class ProgressTask extends AsyncTask<Void, Void, ArrayList> {
+    private class ProgressTask extends AsyncTask<Void, Integer, ArrayList> {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String resultJson = "";
+
+
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             try {
                 String waitStr = getResources().getString(R.string.waitStr);
-                Log.d(LOG_TAG, "onPreExecute  waitStr =" + waitStr);
-                Log.d(LOG_TAG, "onPreExecute  line =" + line);
+                //Log.d(LOG_TAG, "onPreExecute  waitStr =" + waitStr);
+                //Log.d(LOG_TAG, "onPreExecute  line =" + line);
                 waitArray.add(new Product(waitStr,null,null));
                 tradeListAdapter =  new TradeListAdapter(getActivity(),waitArray);
             }catch (Exception e) {
@@ -94,81 +95,87 @@ public class TradesFragment extends Fragment {
 
         }
         @Override
-        protected String doInBackground(Void... params) {
-            try {
-                //URL url = new URL("https://api.exmo.com/v1/trades/?pair=BTC_USD");
-                URL url = new URL(setUrl);
-                Log.d(LOG_TAG, "doInBackground  url =" + url);
-                Log.d(LOG_TAG, "doInBackground  line =" + line);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
+        //protected String doInBackground(Void... params) {
+        protected ArrayList<Product> doInBackground(Void... params) {
 
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
+                String pairLink = getResources().getString(R.string.pairLink);
+                String[] pairListForLink = getResources().getStringArray(R.array.pairListForLink);
 
-                reader = new BufferedReader(new InputStreamReader(inputStream));
+                try {
+                    for (int p=0; p < 53; p++) {
+                        setUrl = pairLink + pairListForLink[p];
+                        //URL url = new URL("https://api.exmo.com/v1/trades/?pair=BTC_USD");
+                        URL url = new URL(setUrl);
+                        //Log.d(LOG_TAG, "doInBackground  url =" + url);
+                        //Log.d(LOG_TAG, "doInBackground  line =" + line);
+                        urlConnection = (HttpURLConnection) url.openConnection();
+                        urlConnection.setRequestMethod("GET");
+                        urlConnection.connect();
+                            InputStream inputStream = urlConnection.getInputStream();
+                            StringBuffer buffer = new StringBuffer();
+                                reader = new BufferedReader(new InputStreamReader(inputStream));
+                                    String line_string;
+                                        while ((line_string = reader.readLine()) != null) {
+                                            buffer.append(line_string);
+                                        }
+                        resultJson = buffer.toString();
+                        Log.d(LOG_TAG, "doInBackground  resultJson =" + resultJson);
 
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
+                        //проба переноса из onPostExecute
+                        String price_buy = "";
+                        String price_sell = "";
+
+                        JSONObject dataJsonObj = new JSONObject(resultJson);
+                        //JSONArray fullTradesArr = dataJsonObj.getJSONArray("BTC_USD");
+                        JSONArray fullTradesArr = dataJsonObj.getJSONArray(pairListForLink[p]);
+
+                        for (int i = 0; i < 35; i++) {
+                            JSONObject lineTrades = fullTradesArr.getJSONObject(i);
+                            String typeTr = lineTrades.getString("type");
+
+                            if (typeTr.equals("buy")) {
+                                price_buy = lineTrades.getString("price");
+                                break;
+                            }
+                        }
+                        for (int j = 0; j < 35; j++) {
+                            JSONObject lineTrades = fullTradesArr.getJSONObject(j);
+                            String typeTr = lineTrades.getString("type");
+
+                            if (typeTr.equals("sell")) {
+                                price_sell = lineTrades.getString("price");
+                                break;
+                            }
+                        }
+                        coinArray.add(new Product(pairListForLink[p], price_sell, price_buy));
+                        //publishProgress(p);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-                resultJson = buffer.toString();
-                Log.d(LOG_TAG, "doInBackground  resultJson =" + resultJson);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return resultJson;
+            //return resultJson;
+            return coinArray;
         }
 
         @Override
-        protected void onPostExecute(String ALLJson) {
+        protected void onPostExecute(ArrayList ALLJson) {
+        //protected void onPostExecute(Void ALLJson) {
             super.onPostExecute(ALLJson);
             Log.d(LOG_TAG, "Весь текст: " + ALLJson);
-            String price_buy ="";
-            String price_sell ="";
 
-            String[] pairListForLink = getResources().getStringArray(R.array.pairListForLink);
-            try {
-                JSONObject dataJsonObj = new JSONObject(ALLJson);
-                JSONArray fullTradesArr = dataJsonObj.getJSONArray("BTC_EUR");
-                String fff = pairListForLink[line];
-                Log.d(LOG_TAG, "onPostExecute  String fff" + fff);
-                //JSONArray fullTradesArr = dataJsonObj.getJSONArray(fff);
-
-                for (int i=0; i < 15; i++) {
-                    JSONObject lineTrades = fullTradesArr.getJSONObject(i);
-                    String typeTr = lineTrades.getString("type");
-
-                    if (typeTr.equals("buy")){
-                        price_buy = lineTrades.getString("price");
-                        break;
-                    }
-                }
-                for (int j=0; j < 15; j++) {
-                    JSONObject lineTrades = fullTradesArr.getJSONObject(j);
-                    String typeTr = lineTrades.getString("type");
-
-                    if (typeTr.equals("sell")){
-                        price_sell = lineTrades.getString("price");
-                        break;
-                    }
-                }
-
-                Log.d(LOG_TAG, "цена продажи  " + price_buy + "Цена покупки " + price_sell);
-                Log.d(LOG_TAG, "onPostExecute  line =" + line);
-                //coinArray.add(new Product("BTC/USD",price_buy,price_sell));
-                coinArray.add(new Product(pairListForLink[line],price_buy,price_sell));
-                ListView listView = (ListView)getView().findViewById(R.id.list_trades);
-                tradeListAdapter = new TradeListAdapter(getActivity(), coinArray);
-                listView.setAdapter(tradeListAdapter);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
+            ListView listView = (ListView)getView().findViewById(R.id.list_trades);
+            tradeListAdapter = new TradeListAdapter(getActivity(), ALLJson);
+            listView.setAdapter(tradeListAdapter);
+            //progressBar.setProgress(0);
         }
+
+//        @Override
+//        protected void onProgressUpdate(Integer... values) {
+//            super.onProgressUpdate(values);
+//
+//            progressBar.setProgress(values[0]);
+//        }
+
     }
 
 

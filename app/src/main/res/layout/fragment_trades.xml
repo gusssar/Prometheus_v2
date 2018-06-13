@@ -13,17 +13,46 @@
         android:textStyle="bold"
         android:layout_centerHorizontal="true"/>
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:id="@+id/titles"
         android:layout_below="@id/title_trades"
+        android:gravity="center"
         android:layout_margin="5dp"
         android:text="Валютная пара"/>
+    <TextView
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/buy"
+        android:layout_toEndOf="@id/titles"
+        android:layout_below="@id/title_trades"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
+        android:text="Покупка"/>
+    <TextView
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/sell"
+        android:layout_toEndOf="@id/buy"
+        android:layout_below="@id/title_trades"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
+        android:text="Продажа"/>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titles"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"/>
     <ListView
         android:id="@+id/list_trades"
-        android:layout_below="@id/titles"
+        android:layout_below="@id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+
 
 </RelativeLayout>
