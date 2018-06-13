@@ -5,10 +5,8 @@
     <string name="title_">Ещё</string>
     <string name="title_user">Личный кабинет</string>
 
-    <string-array name="pairlist">
-        <item>Валютная пара</item>
+    <string-array name="pairListHum">
         <item>BTC/USD</item>
-        <item>BTC/EUR</item>
         <item>BTC/EUR</item>
         <item>BTC/RUB</item>
         <item>BTC/UAH</item>
@@ -62,10 +60,65 @@
         <item>KICK/BTC</item>
         <item>KICK/ETH</item>
     </string-array>
-    <string-array name="pairlink">
+    <string-array name="pairListForLink">
+        <item>BTC_USD</item>
+        <item>BTC_EUR</item>
+        <item>BTC_RUB</item>
+        <item>BTC_UAH</item>
+        <item>BTC_PLN</item>
+        <item>BCH_BTC</item>
+        <item>EOS_BTC</item>
+        <item>EOS_USD</item>
+        <item>BTG_BTC</item>
+        <item>BTG_USD</item>
+        <item>BCH_USD</item>
+        <item>HBZ_BTC</item>
+        <item>HBZ_ETH</item>
+        <item>HBZ_USD</item>
+        <item>BCH_RUB</item>
+        <item>BCH_ETH</item>
+        <item>DASH_BTC</item>
+        <item>DASH_USD</item>
+        <item>DASH_RUB</item>
+        <item>ETH_BTC</item>
+        <item>ETH_LTC</item>
+        <item>ETH_USD</item>
+        <item>ETH_EUR</item>
+        <item>ETH_RUB</item>
+        <item>ETH_UAH</item>
+        <item>ETH_PLN</item>
+        <item>ETC_BTC</item>
+        <item>ETC_USD</item>
+        <item>ETC_RUB</item>
+        <item>LTC_BTC</item>
+        <item>LTC_USD</item>
+        <item>LTC_EUR</item>
+        <item>LTC_RUB</item>
+        <item>ZEC_BTC</item>
+        <item>ZEC_USD</item>
+        <item>ZEC_EUR</item>
+        <item>ZEC_RUB</item>
+        <item>XRP_BTC</item>
+        <item>XRP_USD</item>
+        <item>XRP_RUB</item>
+        <item>XMR_BTC</item>
+        <item>XMR_USD</item>
+        <item>XMR_EUR</item>
+        <item>BTC_USDT</item>
+        <item>ETH_USDT</item>
+        <item>USDT_USD</item>
+        <item>USDT_RUB</item>
+        <item>USD_RUB</item>
+        <item>DOGE_BTC</item>
+        <item>WAVES_BTC</item>
+        <item>WAVES_RUB</item>
+        <item>KICK_BTC</item>
+        <item>KICK_ETH</item>
+    </string-array>
+    <string name="pairLink">https://api.exmo.com/v1/trades/?pair=</string>
+    <string-array name="pair_link">
         <item>Сыллка на пару</item>
         <item>https://api.exmo.com/v1/trades/?pair=BTC_USD</item>
-        <item>https://api.exmo.com/v1/trades/?pair=BTC/EUR</item>
         <item>https://api.exmo.com/v1/trades/?pair=BTC/EUR</item>
         <item>https://api.exmo.com/v1/trades/?pair=BTC/RUB</item>
         <item>https://api.exmo.com/v1/trades/?pair=BTC/UAH</item>

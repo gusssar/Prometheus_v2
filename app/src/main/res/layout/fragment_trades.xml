@@ -5,8 +5,24 @@
     android:layout_height="match_parent"
     tools:context=".TradesFragment">
 
+    <TextView
+        android:id="@+id/title_trades"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_trades"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/titles"
+        android:layout_below="@id/title_trades"
+        android:layout_margin="5dp"
+        android:text="Валютная пара"/>
+
     <ListView
         android:id="@+id/list_trades"
+        android:layout_below="@id/titles"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
