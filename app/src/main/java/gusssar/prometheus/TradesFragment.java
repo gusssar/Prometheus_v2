@@ -14,13 +14,11 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -36,53 +34,41 @@ public class TradesFragment extends Fragment {
 
     public static String LOG_TAG = "my_log";
     public String setUrl = "";
-    protected ProgressBar proBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+        //setRetainInstance(false);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        //setRetainInstance(false);
         View view = inflater.inflate(R.layout.fragment_trades, container, false);
         ListView listView = (ListView) view.findViewById(R.id.list_trades);
-        ProgressBar proBar = (ProgressBar) view.findViewById(R.id.prog_bar);
-        //proBar.setProgress(0);
-        proBar.setMax(52);
-        //String pairLink = getResources().getString(R.string.pairLink);
-        //String[] pairListForLink = getResources().getStringArray(R.array.pairListForLink);
-        //String setUrl = "";
-             //Log.d(LOG_TAG, "onCreateView  setUrl =" + setUrl);
-             //Log.d(LOG_TAG, "onCreateView  line =" + line);
 
             new ProgressTask().execute();
-
         listView.setAdapter(tradeListAdapter);
         return view;
     }
 
     private class ProgressTask extends AsyncTask<Void, Integer, ArrayList> {
+
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String resultJson = "";
 
 
-
         @Override
         protected void onPreExecute() {
+            //setRetainInstance(true);
             super.onPreExecute();
             try {
                 String waitStr = getResources().getString(R.string.waitStr);
                 waitArray.add(new Product(waitStr,null,null));
                 tradeListAdapter =  new TradeListAdapter(getActivity(),waitArray);
-                for (int k=0; k<=10; k++){
-                    Thread.sleep(100);
-                    proBar.setProgress(k);
-                }
             }catch (Exception e) {
                 e.printStackTrace();
             }
@@ -91,12 +77,13 @@ public class TradesFragment extends Fragment {
         @Override
         protected ArrayList<Product> doInBackground(Void... params) {
 
+            //setRetainInstance(true);
                 String pairLink = getResources().getString(R.string.pairLink);
                 String[] pairListForLink = getResources().getStringArray(R.array.pairListForLink);
 
                 try {
-                    //for (int p=0; p < 53; p++) {
-                    for (int p=0; p <= 52; p++) {
+                    //for (int p=0; p <= 52; p++) {
+                    for (int p=0; p <= 8; p++) {
                         setUrl = pairLink + pairListForLink[p];
                         URL url = new URL(setUrl);
                         urlConnection = (HttpURLConnection) url.openConnection();
@@ -118,7 +105,7 @@ public class TradesFragment extends Fragment {
                         JSONObject dataJsonObj = new JSONObject(resultJson);
                         JSONArray fullTradesArr = dataJsonObj.getJSONArray(pairListForLink[p]);
 
-                        for (int i = 0; i < 35; i++) {
+                        for (int i = 0; i < 20; i++) {
                             JSONObject lineTrades = fullTradesArr.getJSONObject(i);
                             String typeTr = lineTrades.getString("type");
 
@@ -127,7 +114,7 @@ public class TradesFragment extends Fragment {
                                 break;
                             }
                         }
-                        for (int j = 0; j < 35; j++) {
+                        for (int j = 0; j < 20; j++) {
                             JSONObject lineTrades = fullTradesArr.getJSONObject(j);
                             String typeTr = lineTrades.getString("type");
 
@@ -148,27 +135,34 @@ public class TradesFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList ALLJson) {
+            //setRetainInstance(true);
             super.onPostExecute(ALLJson);
+            try {
             Log.d(LOG_TAG, "Весь текст: " + ALLJson);
 
             ListView listView = (ListView)getView().findViewById(R.id.list_trades);
             tradeListAdapter = new TradeListAdapter(getActivity(), ALLJson);
             listView.setAdapter(tradeListAdapter);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
         protected void onProgressUpdate(Integer... values) {
+            //setRetainInstance(true);
+            ProgressBar proBarTest = (ProgressBar)getView().findViewById(R.id.prog_bar);
+            //proBarTest.setMax(52);
+            proBarTest.setMax(8);
             super.onProgressUpdate(values);
             try {
-                proBar.setProgress(values[0]);
-                Log.d(LOG_TAG, "бляяяяяя ");
+                proBarTest.setProgress(values[0]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -188,27 +182,15 @@ public class TradesFragment extends Fragment {
 
 }
     class Product {
-        String name;
+        String name1;
         String name2;
         String name3;
 
         Product(String _describe, String _describe2, String _describe3) {
-            name = _describe;
+            name1 = _describe;
             name2 = _describe2;
             name3 = _describe3;
         }
     }
 
-/**
-    {"BTC_USD":
-            [{
-                "trade_id":62013038,
-                "type":"sell",
-                "quantity":"0.00104142",
-                "price":"7615",
-                "amount":"7.9304133",
-                "date":1528444187
-            }]
-    }
-*/
 

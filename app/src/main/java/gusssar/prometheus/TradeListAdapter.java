@@ -6,10 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ImageView;
 import android.widget.TextView;
 
     public class TradeListAdapter extends BaseAdapter {
@@ -24,6 +20,11 @@ import android.widget.TextView;
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
+        static class ViewHolder {                                                                                   //
+            TextView txtItem1;                                                                                              //
+            TextView txtItem2;
+            TextView txtItem3;                                                                                      //
+        }                                                                                                        //
         // кол-во элементов
         @Override
         public int getCount() {
@@ -45,28 +46,27 @@ import android.widget.TextView;
         // пункт списка
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder viewHolder;                                                                              //
             // используем созданные, но не используемые view
             View view = convertView;
             if (view == null) {
                 view =lInflater.inflate(R.layout.list_item,parent,false);
+                viewHolder = new ViewHolder();
+                viewHolder.txtItem1=(TextView) view.findViewById(R.id.pair_list_name);
+                viewHolder.txtItem2=(TextView) view.findViewById(R.id.buy_list);
+                viewHolder.txtItem3=(TextView) view.findViewById(R.id.sell_list);
+                    view.setTag(viewHolder);
+            } else {
+                viewHolder = (ViewHolder) view.getTag();
             }
 
             Product p = getProduct(position);
-
-            // заполняем View в пункте списка данными из товаров: наименование, цена
-            // и картинка
-            ((TextView) view.findViewById(R.id.pair_list_name)).setText(p.name);
-            ((TextView) view.findViewById(R.id.buy_list)).setText(p.name2);
-            ((TextView) view.findViewById(R.id.sell_list)).setText(p.name3);
-/**
-            CheckBox cbBuy = (CheckBox) view.findViewById(R.id.cbBox);
-            // присваиваем чекбоксу обработчик
-            cbBuy.setOnCheckedChangeListener(myCheckChangeList);
-            // пишем позицию
-            cbBuy.setTag(position);
-            // заполняем данными из товаров: в корзине или нет
-            cbBuy.setChecked(p.box);
- */
+            viewHolder.txtItem1.setText(p.name1);
+            viewHolder.txtItem2.setText(p.name2);
+            viewHolder.txtItem3.setText(p.name3);
+           // ((TextView) view.findViewById(R.id.pair_list_name)).setText(p.name);
+           // ((TextView) view.findViewById(R.id.buy_list)).setText(p.name2);
+           // ((TextView) view.findViewById(R.id.sell_list)).setText(p.name3);
             return view;
         }
 
@@ -75,23 +75,4 @@ import android.widget.TextView;
             return ((Product) getItem(position));
         }
 
-        /** // содержимое корзины
-        ArrayList<Product> getBox() {
-            ArrayList<Product> box = new ArrayList<Product>();
-            for (Product p : objects) {
-                // если в корзине
-                //if (p.box)
-                    box.add(p);
-            }
-            return box;
-        }
-
-        /** // обработчик для чекбоксов
-        OnCheckedChangeListener myCheckChangeList = new OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                // меняем данные товара (в корзине или нет)
-                getProduct((Integer) buttonView.getTag()).box = isChecked;
-            }
-        }; */
     }

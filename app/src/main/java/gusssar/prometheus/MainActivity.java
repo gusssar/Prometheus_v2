@@ -55,24 +55,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_TAG, "MainActivity onCreate");
         super.onCreate(savedInstanceState);
+        //setRetainInstance(true);
         setContentView(R.layout.activity_main);
 
-        //textView = (TextView) findViewById(R.id.textView);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-     //   if (savedInstanceState == null) {
-     //       // при первом запуске программы
-     //       FragmentTransaction transaction = fragmentManager.beginTransaction();
-     //       // добавляем в контейнер при помощи метода add()
-     //       fragmentTransaction.add(R.id.container, myFragment1, TAG_1);
-     //       fragmentTransaction.commit();
-     //   }
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.add(R.id.main_frag, new TradesFragment()).commit();
         }
+    }
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(LOG_TAG, "onSaveInstanceState");
     }
 
 }
