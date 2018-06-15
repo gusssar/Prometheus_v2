@@ -1,6 +1,8 @@
 package gusssar.prometheus;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,7 +29,6 @@ import java.util.ArrayList;
 public class TradesFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-
     public ArrayList<Product> coinArray = new ArrayList<>();
     public ArrayList<Product> waitArray = new ArrayList<>();
     TradeListAdapter tradeListAdapter;
@@ -35,21 +36,23 @@ public class TradesFragment extends Fragment {
     public static String LOG_TAG = "my_log";
     public String setUrl = "";
 
+    //boolean status_connect;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setRetainInstance(false);
+                setRetainInstance(true);
+                new ProgressTask().execute();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //setRetainInstance(false);
+        Log.d(LOG_TAG, "onCreateView savedInstanceState: " + savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_trades, container, false);
         ListView listView = (ListView) view.findViewById(R.id.list_trades);
 
-            new ProgressTask().execute();
         listView.setAdapter(tradeListAdapter);
         return view;
     }
@@ -77,13 +80,11 @@ public class TradesFragment extends Fragment {
         @Override
         protected ArrayList<Product> doInBackground(Void... params) {
 
-            //setRetainInstance(true);
                 String pairLink = getResources().getString(R.string.pairLink);
                 String[] pairListForLink = getResources().getStringArray(R.array.pairListForLink);
 
                 try {
-                    //for (int p=0; p <= 52; p++) {
-                    for (int p=0; p <= 8; p++) {
+                    for (int p=0; p <= 52; p++) {
                         setUrl = pairLink + pairListForLink[p];
                         URL url = new URL(setUrl);
                         urlConnection = (HttpURLConnection) url.openConnection();
@@ -135,7 +136,6 @@ public class TradesFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList ALLJson) {
-            //setRetainInstance(true);
             super.onPostExecute(ALLJson);
             try {
             Log.d(LOG_TAG, "Весь текст: " + ALLJson);
@@ -150,10 +150,7 @@ public class TradesFragment extends Fragment {
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-            //setRetainInstance(true);
             ProgressBar proBarTest = (ProgressBar)getView().findViewById(R.id.prog_bar);
-            //proBarTest.setMax(52);
-            proBarTest.setMax(8);
             super.onProgressUpdate(values);
             try {
                 proBarTest.setProgress(values[0]);
@@ -164,6 +161,27 @@ public class TradesFragment extends Fragment {
 
     }
 
+    //private Context _context;
+//
+    //public TradesFragment(Context context){
+    //    this._context = context;
+    //}
+//
+    //public boolean isConnectingToInternet(){
+    //    ConnectivityManager connectivity = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    //    if (connectivity != null)
+    //    {
+    //        NetworkInfo[] info = connectivity.getAllNetworkInfo();
+    //        if (info != null)
+    //            for (int i = 0; i < info.length; i++)
+    //                if (info[i].getState() == NetworkInfo.State.CONNECTED)
+    //                {
+    //                    return true;
+    //                }
+//
+    //    }
+    //    return false;
+    //}
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -176,8 +194,15 @@ public class TradesFragment extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        setRetainInstance(true);
+        mListener = null;
     }
 
 }
