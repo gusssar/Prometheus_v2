@@ -201,7 +201,7 @@ public class TradesFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        setRetainInstance(true);
+    //    setRetainInstance(true);
         mListener = null;
     }
 
