@@ -6,21 +6,24 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.io.IOException;
+
 class TradesDbManager extends SQLiteOpenHelper {
-    private static TradesDbManager sInstance;
+    //private static TradesDbManager sInstance;
 
     //если изменить версию, то выполняем то, что в onUpgrade()
     private static final int DATABASE_VERSION = 1;
-    private static final String
+    public static Context myContext;
+    public static String
             LOG_TAG = "TradesDbManager",
-            DATABASE_NAME = "prometheus.db",
-            TABLE_DATA = "trades",
-            TABLE_TRADE_ID = "trade_id",
-            TABLE_TYPE = "type",
-            TABLE_PRICE = "price",
-            TABLE_QUANTITY="quantity",
-            TABLE_AMOUNT="amount",
-            TABLE_DATE = "date";
+            DATABASE_NAME = "prometheus.db";
+    String[] TABLE_DATA;
+    Integer TABLE_TRADE_ID;
+    String  TABLE_TYPE;
+    Double  TABLE_PRICE;
+    Double  TABLE_QUANTITY;
+    Double  TABLE_AMOUNT;
+    Integer TABLE_DATE;
 
     //private static final String
     //        LOG_TAG = "TradesDbManager",
@@ -35,37 +38,40 @@ class TradesDbManager extends SQLiteOpenHelper {
     //        TRUE = "true",
     //        FALSE = "false";
 
-    public static synchronized TradesDbManager getInstance(Context context) {
-        if (sInstance == null) sInstance = new TradesDbManager(context);
-        return sInstance;
-    }
+    //public static synchronized TradesDbManager getInstance(Context context) {
+    //    if (sInstance == null) sInstance = new TradesDbManager(context);
+    //    return sInstance;
+    //}
 
     // конструктор суперкласса
-    private TradesDbManager(Context context) {
+    //private TradesDbManager(Context context) {
+    public TradesDbManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        myContext = context;
     }
 
-    @Override
-    public void onConfigure(SQLiteDatabase db) {
-        super.onConfigure(db);
-        db.setForeignKeyConstraintsEnabled(true);
-    }
+    //@Override
+    //public void onConfigure(SQLiteDatabase db) {
+    //    super.onConfigure(db);
+    //    db.setForeignKeyConstraintsEnabled(true);
+    //}
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d(LOG_TAG, "--- onCreate database ---");
-        for (int i=0; i <= 52; i++) {
-            String CREATE_TABLE_DATA = "CREATE TABLE " + TABLE_DATA +
-                    "(" +
-                    TABLE_TRADE_ID + " INTEGER PRIMARY KEY," +
-                    TABLE_TYPE + " TEXT," +
-                    TABLE_PRICE + " REAL," +
-                    TABLE_QUANTITY + " REAL," +
-                    TABLE_AMOUNT + " REAL," +
-                    TABLE_DATE + " INTEGER" +
-                    ")";
-            db.execSQL(CREATE_TABLE_DATA);
-        }
+            TABLE_DATA = myContext.getResources().getStringArray(R.array.pairListForLink);
+            for (int i = 0; i <= 52; i++) {
+                String CREATE_TABLE_DATA = "CREATE TABLE " + TABLE_DATA[i] +
+                        "(" +
+                        "TABLE_TRADE_ID         INTEGER PRIMARY KEY," +
+                        "TABLE_TYPE             TEXT," +
+                        "TABLE_PRICE            REAL," +
+                        "TABLE_QUANTITY         REAL," +
+                        "TABLE_AMOUNT           REAL," +
+                        "TABLE_DATE             INTEGER" +
+                        ")";
+                db.execSQL(CREATE_TABLE_DATA);
+            }
     }
 
     @Override

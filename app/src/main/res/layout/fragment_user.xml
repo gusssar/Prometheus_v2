@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textStyle="bold"
-        android:text="Список валют"
+        android:text="Проба из БД"
         />
     <ListView
         android:id="@+id/list_user"

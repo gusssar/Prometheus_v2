@@ -84,7 +84,8 @@ public class TradesFragment extends Fragment {
                 String[] pairListForLink = getResources().getStringArray(R.array.pairListForLink);
 
                 try {
-                    for (int p=0; p <= 52; p++) {
+                    //for (int p=0; p <= 52; p++) {
+                    for (int p=0; p <= 2; p++) {
                         setUrl = pairLink + pairListForLink[p];
                         URL url = new URL(setUrl);
                         urlConnection = (HttpURLConnection) url.openConnection();
@@ -207,11 +208,13 @@ public class TradesFragment extends Fragment {
 
 }
     class Product {
+
         String name1;
         String name2;
         String name3;
 
-        Product(String _describe, String _describe2, String _describe3) {
+        Product(String _describe, String _describe2, String _describe3)
+        {
             name1 = _describe;
             name2 = _describe2;
             name3 = _describe3;
