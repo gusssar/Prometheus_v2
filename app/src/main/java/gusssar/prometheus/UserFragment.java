@@ -75,7 +75,7 @@ public class UserFragment extends Fragment {
             String[] pairListForLink = getResources().getStringArray(R.array.pairListForLink);
             try {
                 Cursor c = db_trades.query(pairListForLink[0],null,null,null,null,null,null,null);
-                    if (c.moveToFirst()){
+                    if (c.moveToLast()){
                         //получаем индексы
                         int table_trade_id  = c.getColumnIndex("TABLE_TRADE_ID");
                         int table_type      = c.getColumnIndex("TABLE_TYPE");
@@ -113,7 +113,8 @@ public class UserFragment extends Fragment {
                                         TABLE_TYPE,
                                         TABLE_PRICE
                                 ));
-                        } while (c.moveToNext());
+
+                        } while (c.moveToPrevious());
                     } else
                         Log.d(LOG_TAG, "0 rows");
                 c.close();
@@ -141,6 +142,7 @@ public class UserFragment extends Fragment {
                 e.printStackTrace();
             }
             db_trades.close();
+            Log.d(LOG_TAG, "--------ALEXEEV---------USER-------------ALEXEEV-----");
             return tradeFullArray;
         }
 
