@@ -8,14 +8,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
-
+import android.view.View.OnClickListener;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.InputStream;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +50,22 @@ public class UserFragment extends Fragment {
                 new ProgressTask().execute();
         listView.setAdapter(tradeListAdapter);
 
+            Button textButton = (Button) view.findViewById(R.id.btn_user);
+                textButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(getActivity(),"нажата кнопка",Toast.LENGTH_SHORT).show();
+                        /**
+                         *
+                         *
+                         *
+                         * Здесь необходимо прописать обработчик нажатия для обновления БД
+                         *
+                         *
+                         * */
+                    }
+                });
+
         return view;
     }
 
@@ -75,7 +93,7 @@ public class UserFragment extends Fragment {
             String[] pairListForLink = getResources().getStringArray(R.array.pairListForLink);
             try {
                 Cursor c = db_trades.query(pairListForLink[0],null,null,null,null,null,null,null);
-                    if (c.moveToFirst()){
+                    if (c.moveToLast()){
                         //получаем индексы
                         int table_trade_id  = c.getColumnIndex("TABLE_TRADE_ID");
                         int table_type      = c.getColumnIndex("TABLE_TYPE");
@@ -87,8 +105,9 @@ public class UserFragment extends Fragment {
                         do {
                             // получаем значения по номерам столбцов и пишем все в лог
                             Log.d(LOG_TAG,
-                                    "table_trade_id = "     + c.getInt(table_trade_id) +
+                                    "User_FR_table_trade_id = "     + c.getInt(table_trade_id) +
                                             ", table_type = "    + c.getString(table_type) +
+                                            ", table_quantity = "    + c.getString(table_quantity) +
                                             ", table_price = "    + c.getString(table_price));
                             // переход на следующую строку
                             // а если следующей нет (текущая - последняя), то false - выходим из цикла
@@ -96,7 +115,8 @@ public class UserFragment extends Fragment {
                                     String   TABLE_TRADE_ID = c.getString(table_trade_id);
                                     String   TABLE_TYPE = c.getString(table_type);
                                     String   TABLE_PRICE = c.getString(table_price);
-                                    Double   TABLE_QUANTITY = c.getDouble(table_quantity);
+                                    //Double   TABLE_QUANTITY = c.getDouble(table_quantity);
+                                            String   TABLE_QUANTITY = c.getString(table_quantity);
                                     Double   TABLE_AMOUNT = c.getDouble(table_amount);
                                     Integer  TABLE_DATE = c.getInt(table_date);
 
@@ -111,31 +131,13 @@ public class UserFragment extends Fragment {
                                 tradeFullArray.add(new Product(
                                         TABLE_TRADE_ID,
                                         TABLE_TYPE,
-                                        TABLE_PRICE
+                                        //TABLE_PRICE
+                                        TABLE_QUANTITY
                                 ));
-                        } while (c.moveToNext());
+                        } while (c.moveToPrevious());
                     } else
                         Log.d(LOG_TAG, "0 rows");
                 c.close();
-                //URL url = new URL("https://api.exmo.com/v1/currency/");
-//
-                //urlConnection = (HttpURLConnection) url.openConnection();
-                //urlConnection.setRequestMethod("GET");
-                //urlConnection.connect();
-//
-                //InputStream inputStream = urlConnection.getInputStream();
-                //StringBuffer buffer = new StringBuffer();
-//
-                //reader = new BufferedReader(new InputStreamReader(inputStream));
-//
-                //String line;
-                //while ((line = reader.readLine()) != null) {
-                //    buffer.append(line);
-                //}
-//
-                //resultJson = buffer.toString();
-
-
 
             } catch (Exception e) {
                 e.printStackTrace();

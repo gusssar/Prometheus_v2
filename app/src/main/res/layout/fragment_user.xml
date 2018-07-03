@@ -5,18 +5,26 @@
     android:layout_height="match_parent"
     android:padding="5dp"
     tools:context=".UserFragment">
-
+<!--
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/title_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textStyle="bold"
+        android:Clickable="true"
+        android:text="Проба из БД"
+        />
+  -->
+    <Button
+        android:id="@+id/btn_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="Проба из БД"
         />
     <ListView
         android:id="@+id/list_user"
-        android:layout_below="@id/title"
+        android:layout_below="@id/btn_user"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

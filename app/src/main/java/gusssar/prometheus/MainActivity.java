@@ -24,14 +24,12 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.annotation.Repeatable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**здесь я продолжаю работу*/
 public class MainActivity extends AppCompatActivity {
 
     final String LOG_TAG = "myLogs";
@@ -76,11 +74,9 @@ public class MainActivity extends AppCompatActivity {
     };
 
     @Override
-    //protected void onCreate(Bundle savedInstanceState) {
     public void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_TAG, "MainActivity onCreate");
         super.onCreate(savedInstanceState);
-        //setRetainInstance(true);
         setContentView(R.layout.activity_main);
 
 
@@ -93,8 +89,7 @@ public class MainActivity extends AppCompatActivity {
             transaction.add(R.id.main_frag, new TradesFragment()).commit();
         }
         tradesDbManager = new TradesDbManager(this);
-        new Timer().schedule(new RepeatTimerTask(),0,10000);
-        /**проба повтора с задержкаой*/
+        //new Timer().schedule(new RepeatTimerTask(),0,10000);
                 new TradesTask().execute();
     }
 
@@ -106,19 +101,14 @@ public class MainActivity extends AppCompatActivity {
         String resultJson = "";
         ContentValues cv_trades = new ContentValues();
 
-        @Override
-        protected void onPreExecute() {
-            //setRetainInstance(true);
-            super.onPreExecute();
-            try {
-               // TradesDbManager tradesDbManager = new TradesDbManager();
-        //        String waitStr = getResources().getString(R.string.waitStr);
-        //        waitArray.add(new Product(waitStr,null,null));
-        //        tradeListAdapter =  new TradeListAdapter(getActivity(),waitArray);
-            }catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+     //   @Override
+     //   protected void onPreExecute() {
+     //       super.onPreExecute();
+     //       try {
+     //       }catch (Exception e) {
+     //           e.printStackTrace();
+     //       }
+     //   }
 
 
         //для заполнения полного массива
@@ -130,9 +120,9 @@ public class MainActivity extends AppCompatActivity {
 
             SQLiteDatabase db_trades = tradesDbManager.getWritableDatabase();
                     /**предварительная очистка базы!*/
-                    for (int y=0; y <= 52; y++)
-                        { db_trades.delete(pairListForLink[y],null,null);
-                        }
+                   // for (int y=0; y <= 52; y++)
+                   //     { db_trades.delete(pairListForLink[y],null,null);
+                   //     }
             //ContentValues cv_trades = new ContentValues();
             try {
                 //for (int p=0; p <= 52; p++) {
@@ -150,17 +140,18 @@ public class MainActivity extends AppCompatActivity {
                         buffer.append(line_string);
                     }
                     resultJson = buffer.toString();
+                    /**Не обходимо добавить проверку на ошибку сервера
+                     * при {"result":false,"error":"Error 40016: Maintenance work in progress"}
+                     * */
                     Log.d(LOG_TAG, "doInBackground  resultJson =" + resultJson);
 
-                    //String price_buy = "";
-                    //String price_sell = "";
 
                     JSONObject dataJsonObj = new JSONObject(resultJson);
                     JSONArray fullTradesArr = dataJsonObj.getJSONArray(pairListForLink[p]);
 
 
-                   for (int i = 0; i < 20; i++) {
-                    //for (int i = 0; i <= 2; i++) {
+                   //for (int i = 0; i < 20; i++) {
+                    for (int i = 0; i <= 2; i++) {
                        JSONObject lineTrades = fullTradesArr.getJSONObject(i);
                        Integer idTr = lineTrades.getInt("trade_id");
                        String typeTr = lineTrades.getString("type");
@@ -168,47 +159,27 @@ public class MainActivity extends AppCompatActivity {
                        Double quantityTr = lineTrades.getDouble("quantity");
                        Double amountTr = lineTrades.getDouble("amount");
                        Integer dateTr = lineTrades.getInt("date");
+                        Log.d(LOG_TAG,
+                                "Main_Act_table_trade_id = "     + idTr +
+                                        ", table_type = "    + typeTr +
+                                        ", table_quantity = "    + quantityTr +
+                                        ", table_price = "    + priceTr);
 
-                       //tradeFullArray.add(
-                       //        new TradeFullDataBase(
-                       //                idTr,
-                       //                typeTr,
-                       //                priceTr,
-                       //                quantityTr,
-                       //                amountTr,
-                       //                dataTr
-                       //        ));
-                       cv_trades.put("TABLE_TRADE_ID",     idTr);
-                       cv_trades.put("TABLE_TYPE",         typeTr);
-                       cv_trades.put("TABLE_PRICE",        priceTr);
-                       cv_trades.put("TABLE_QUANTITY",     quantityTr);
-                       cv_trades.put("TABLE_AMOUNT",       amountTr);
-                       cv_trades.put("TABLE_DATE",         dateTr);
-                       Log.d(LOG_TAG, "cv_trades =" + cv_trades);
-                       db_trades.insert(pairListForLink[p],null,cv_trades);
-                       //if (typeTr.equals("buy")) {
-                       //    price_buy = lineTrades.getString("price");
-                       //    break;
-                       //}
+                            cv_trades.put("TABLE_TRADE_ID",     idTr);
+                            cv_trades.put("TABLE_TYPE",         typeTr);
+                            cv_trades.put("TABLE_PRICE",        priceTr);
+                            cv_trades.put("TABLE_QUANTITY",     quantityTr);
+                            cv_trades.put("TABLE_AMOUNT",       amountTr);
+                            cv_trades.put("TABLE_DATE",         dateTr);
+                            Log.d(LOG_TAG, "cv_trades =" + cv_trades);
+                            db_trades.insert(pairListForLink[p],null,cv_trades);
                    }
-                   //for (int j = 0; j < 20; j++) {
-                   //    JSONObject lineTrades = fullTradesArr.getJSONObject(j);
-                   //    String typeTr = lineTrades.getString("type");
-//
-                   //    if (typeTr.equals("sell")) {
-                   //        price_sell = lineTrades.getString("price");
-                   //        break;
-                   //    }
-                   //}
-                    //coinArray.add(new TradeFullDataBase(pairListForLink[p], price_sell, price_buy));
-
                     publishProgress(p);
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            //return coinArray;
             tradesDbManager.close();
             return tradeFullArray;
         }
@@ -217,10 +188,6 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList ALLJson) {
             super.onPostExecute(ALLJson);
             try {
-                //Log.d(LOG_TAG, "Весь текст: " + ALLJson);
-                //ListView listView = (ListView)getView().findViewById(R.id.list_trades);
-                //tradeListAdapter = new TradeListAdapter(getActivity(), ALLJson);
-                //listView.setAdapter(tradeListAdapter);
             }catch (Exception e) {
                 e.printStackTrace();
             }
@@ -228,10 +195,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-            //ProgressBar proBarTest = (ProgressBar)getView().findViewById(R.id.prog_bar);
             super.onProgressUpdate(values);
             try {
-             //   proBarTest.setProgress(values[0]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -243,20 +208,21 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         Log.d(LOG_TAG, "onSaveInstanceState");
     }
+//
+//
+//
+//public class RepeatTimerTask extends TimerTask {
+//    private Runnable runnable = new Runnable() {
+//        public void run() {
+//            new TradesTask().execute();
+//        }
+//    };
+//
+//    public void run() {
+//        handler.post(runnable);
+//    }
+//}
 
-
-
-public class RepeatTimerTask extends TimerTask {
-    private Runnable runnable = new Runnable() {
-        public void run() {
-            new TradesTask().execute();
-        }
-    };
-
-    public void run() {
-        handler.post(runnable);
-    }
-}
 }
 class TradeFullDataBase {
 
