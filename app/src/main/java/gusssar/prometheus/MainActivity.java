@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
+/**здесь я продолжаю работу*/
 public class MainActivity extends AppCompatActivity {
 
     final String LOG_TAG = "myLogs";
