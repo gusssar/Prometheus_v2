@@ -30,7 +30,11 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity {
+import gusssar.prometheus.UserFragment.onSomeEventListener;
+import android.app.Fragment;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity implements onSomeEventListener {
 
     final String LOG_TAG = "myLogs";
     public String setUrl = "";
@@ -93,6 +97,12 @@ public class MainActivity extends AppCompatActivity {
                 new TradesTask().execute();
     }
 
+    @Override
+    public void someEvent(String s) {
+        Toast.makeText(this,s,Toast.LENGTH_SHORT).show();
+        //Fragment frag1 = getFragmentManager().findFragmentById(R.id.fragment1);
+        //((TextView)frag1.getView().findViewById(R.id.textView)).setText("Text from Fragment 2:" + s);
+    }
 
     private class TradesTask extends AsyncTask<Void, Integer, ArrayList> {
 
