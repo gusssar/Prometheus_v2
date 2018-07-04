@@ -105,7 +105,8 @@ public class UserFragment extends Fragment {
                 String waitStr = getResources().getString(R.string.waitStr);
                 waitArray.add(new Product(waitStr,null,null));
                 tradeListAdapter =  new TradeListAdapter(getActivity(),waitArray);
-                 tradeFullArray.clear();
+                /**предварительная очистка основного массива!*/
+                tradeFullArray.clear();
 
             }catch (Exception e) {
                 e.printStackTrace();
@@ -115,11 +116,13 @@ public class UserFragment extends Fragment {
         @Override
         //protected ArrayList<TradeFullDataBase> doInBackground(Void... params) {
         protected ArrayList<Product> doInBackground(Void... params) {
+            int count_list = 0;
             SQLiteDatabase db_trades = tradesDbManager.getWritableDatabase();
             String[] pairListForLink = getResources().getStringArray(R.array.pairListForLink);
             try {
                 Cursor c = db_trades.query(pairListForLink[0],null,null,null,null,null,null,null);
                     if (c.moveToLast()){
+                    //if (c.moveToPosition(20)){
                         //получаем индексы
                         int table_trade_id  = c.getColumnIndex("TABLE_TRADE_ID");
                         int table_type      = c.getColumnIndex("TABLE_TYPE");
@@ -129,6 +132,7 @@ public class UserFragment extends Fragment {
                         int table_date      = c.getColumnIndex("TABLE_DATE");
 
                         do {
+                            count_list++;
                             // получаем значения по номерам столбцов и пишем все в лог
                             Log.d(LOG_TAG,
                                     "User_FR_table_trade_id = "     + c.getInt(table_trade_id) +
@@ -154,13 +158,17 @@ public class UserFragment extends Fragment {
 //                                    TABLE_AMOUNT,
 //                                    TABLE_DATE
 //                            ));
+                            if (count_list <= 5)
+                            {
                                 tradeFullArray.add(new Product(
                                         TABLE_TRADE_ID,
                                         TABLE_TYPE,
                                         //TABLE_PRICE
                                         TABLE_QUANTITY
                                 ));
+                            }  else return tradeFullArray;
                         } while (c.moveToPrevious());
+                        //} while (c.moveToPosition(2));
                     } else
                         Log.d(LOG_TAG, "0 rows");
                 c.close();
