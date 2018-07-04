@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
         setContentView(R.layout.activity_main);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        //ProgressBar progBarMain = (ProgressBar)findViewById(R.id.prog_bar_main);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         if (savedInstanceState == null) {
@@ -113,14 +114,17 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
         String resultJson = "";
         ContentValues cv_trades = new ContentValues();
 
-     //   @Override
-     //   protected void onPreExecute() {
-     //       super.onPreExecute();
-     //       try {
-     //       }catch (Exception e) {
-     //           e.printStackTrace();
-     //       }
-     //   }
+        ProgressBar progBarMain = (ProgressBar)findViewById(R.id.prog_bar_main);
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            try {
+                progBarMain.setVisibility(ProgressBar.VISIBLE);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
 
         //для заполнения полного массива
@@ -201,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
             super.onPostExecute(ALLJson);
             //Toast.makeText(this,"s",Toast.LENGTH_SHORT).show();
             try {
-
+                progBarMain.setVisibility(ProgressBar.INVISIBLE);
             }catch (Exception e) {
                 e.printStackTrace();
             }
@@ -209,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-            ProgressBar progBarMain = (ProgressBar)findViewById(R.id.prog_bar_main);
+            //ProgressBar progBarMain = (ProgressBar)findViewById(R.id.prog_bar_main);
             super.onProgressUpdate(values);
             try {
                 progBarMain.setProgress(values[0]);
