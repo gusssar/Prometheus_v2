@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
     TradesDbManager tradesDbManager;
     private Handler handler = new Handler();
 
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -82,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
         Log.d(LOG_TAG, "MainActivity onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -162,8 +162,8 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
                     JSONArray fullTradesArr = dataJsonObj.getJSONArray(pairListForLink[p]);
 
 
-                   //for (int i = 0; i < 20; i++) {
-                    for (int i = 0; i <= 2; i++) {
+                   for (int i = 0; i < 10; i++) {
+                    //for (int i = 0; i <= 2; i++) {
                        JSONObject lineTrades = fullTradesArr.getJSONObject(i);
                        Integer idTr = lineTrades.getInt("trade_id");
                        String typeTr = lineTrades.getString("type");
@@ -199,7 +199,9 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
         @Override
         protected void onPostExecute(ArrayList ALLJson) {
             super.onPostExecute(ALLJson);
+            //Toast.makeText(this,"s",Toast.LENGTH_SHORT).show();
             try {
+
             }catch (Exception e) {
                 e.printStackTrace();
             }
@@ -207,8 +209,10 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
 
         @Override
         protected void onProgressUpdate(Integer... values) {
+            ProgressBar progBarMain = (ProgressBar)findViewById(R.id.prog_bar_main);
             super.onProgressUpdate(values);
             try {
+                progBarMain.setProgress(values[0]);
             } catch (Exception e) {
                 e.printStackTrace();
             }

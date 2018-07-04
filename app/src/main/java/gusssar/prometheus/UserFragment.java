@@ -158,7 +158,7 @@ public class UserFragment extends Fragment {
 //                                    TABLE_AMOUNT,
 //                                    TABLE_DATE
 //                            ));
-                            if (count_list <= 5)
+                            if (count_list <= 15)
                             {
                                 tradeFullArray.add(new Product(
                                         TABLE_TRADE_ID,

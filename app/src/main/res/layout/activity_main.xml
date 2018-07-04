@@ -26,9 +26,19 @@
             android:layout_height="match_parent">
         </fragment>
 -->
+    <ProgressBar
+        android:id="@+id/prog_bar_main"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titles"
+        android:max="50"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"/>
     <LinearLayout
         android:orientation="vertical"
         android:id="@+id/main_frag"
+        android:layout_below="@id/prog_bar_main"
         android:layout_above="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

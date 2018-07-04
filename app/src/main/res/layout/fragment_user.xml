@@ -18,6 +18,7 @@
   -->
     <Button
         android:id="@+id/btn_user"
+        android:layout_below="@id/prog_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Проба из БД"
