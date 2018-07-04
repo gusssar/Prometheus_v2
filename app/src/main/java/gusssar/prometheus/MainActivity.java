@@ -92,14 +92,16 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.add(R.id.main_frag, new TradesFragment()).commit();
         }
-        tradesDbManager = new TradesDbManager(this);
-        //new Timer().schedule(new RepeatTimerTask(),0,10000);
-                new TradesTask().execute();
+        //tradesDbManager = new TradesDbManager(this);
+        ////new Timer().schedule(new RepeatTimerTask(),0,10000);
+        //        new TradesTask().execute();
     }
 
     @Override
     public void someEvent(String s) {
         Toast.makeText(this,s,Toast.LENGTH_SHORT).show();
+            tradesDbManager = new TradesDbManager(this);
+                new TradesTask().execute();
         //Fragment frag1 = getFragmentManager().findFragmentById(R.id.fragment1);
         //((TextView)frag1.getView().findViewById(R.id.textView)).setText("Text from Fragment 2:" + s);
     }
@@ -130,9 +132,9 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
 
             SQLiteDatabase db_trades = tradesDbManager.getWritableDatabase();
                     /**предварительная очистка базы!*/
-                   // for (int y=0; y <= 52; y++)
-                   //     { db_trades.delete(pairListForLink[y],null,null);
-                   //     }
+                    //for (int y=0; y <= 52; y++)
+                    //    { db_trades.delete(pairListForLink[y],null,null);
+                    //    }
             //ContentValues cv_trades = new ContentValues();
             try {
                 //for (int p=0; p <= 52; p++) {

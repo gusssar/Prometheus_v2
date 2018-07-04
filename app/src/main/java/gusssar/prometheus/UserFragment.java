@@ -63,11 +63,10 @@ public class UserFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user, container, false);
-        ListView listView = (ListView) view.findViewById(R.id.list_user);
+        //final ListView listView = (ListView) view.findViewById(R.id.list_user);
             tradesDbManager = new TradesDbManager(getActivity());
             //final SQLiteDatabase db_trades = tradesDbManager.getReadableDatabase();
-                new ProgressTask().execute();
-        listView.setAdapter(tradeListAdapter);
+
 
             Button textButton = (Button) view.findViewById(R.id.btn_user);
                 textButton.setOnClickListener(new OnClickListener() {
@@ -75,11 +74,21 @@ public class UserFragment extends Fragment {
                     public void onClick(View view) {
                         /**
                          * Здесь необходимо прописать обработчик нажатия для обновления БД*/
-                        //Toast.makeText(getActivity(),"нажата кнопка",Toast.LENGTH_SHORT).show();
-                        someEventListener.someEvent("Test text to User Fragment");
+                        try {
+                            //Toast.makeText(getActivity(),"нажата кнопка",Toast.LENGTH_SHORT).show();
+                            someEventListener.someEvent("Test text to User Fragment");
+                            //ListView listView = (ListView) view.findViewById(R.id.list_user);
+                            new ProgressTask().execute();
+                            //listView.setAdapter(tradeListAdapter);
+                        } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                          /** */
                     }
                 });
+        new ProgressTask().execute();
+        //listView.setAdapter(tradeListAdapter);
 
         return view;
     }
@@ -96,6 +105,8 @@ public class UserFragment extends Fragment {
                 String waitStr = getResources().getString(R.string.waitStr);
                 waitArray.add(new Product(waitStr,null,null));
                 tradeListAdapter =  new TradeListAdapter(getActivity(),waitArray);
+                 tradeFullArray.clear();
+
             }catch (Exception e) {
                 e.printStackTrace();
             }
