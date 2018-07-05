@@ -25,13 +25,16 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 
-public class UserFragment extends Fragment {
+import android.support.v4.widget.SwipeRefreshLayout;
+
+public class UserFragment extends Fragment{
     /**Связка Fragment vs Activity*/
     public interface onSomeEventListener {
         public void someEvent(String s);
     }
 
     onSomeEventListener someEventListener;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onAttach(Activity activity) {
@@ -69,7 +72,11 @@ public class UserFragment extends Fragment {
 
 
             Button textButton = (Button) view.findViewById(R.id.btn_user);
-                textButton.setOnClickListener(new OnClickListener() {
+            mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+                mSwipeRefreshLayout.setColorSchemeResources(
+                        R.color.blue_swipe, R.color.green_swipe,
+                        R.color.orange_swipe, R.color.red_swipe);
+                        textButton.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         /**
@@ -87,9 +94,22 @@ public class UserFragment extends Fragment {
                          /** */
                     }
                 });
+
+                mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        try {
+                            //someEventListener.someEvent("Test text from SwipeRefresh");
+                            new ProgressTask().execute();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+
         new ProgressTask().execute();
         //listView.setAdapter(tradeListAdapter);
-
         return view;
     }
 
@@ -196,6 +216,7 @@ public class UserFragment extends Fragment {
             //       Log.d(LOG_TAG, "имя: " + object);
 //
             //       coinArray.add(new Product(object,null,null));
+                mSwipeRefreshLayout.setRefreshing(false);
                    ListView listView = (ListView)getView().findViewById(R.id.list_user);
                    tradeListAdapter = new TradeListAdapter(getActivity(), FromBackArray);
                    listView.setAdapter(tradeListAdapter);

@@ -1,8 +1,11 @@
 package gusssar.prometheus;
 
 import android.app.Fragment;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +22,29 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import android.app.Activity;
 
 public class _Fragment extends Fragment {
 
     public ArrayList<Product> coinArray = new ArrayList<>();
     public ArrayList<Product> waitArray = new ArrayList<>();
     TradeListAdapter tradeListAdapter;
+    TradesDbManager tradesDbManager;
+
+    public interface onSomeEventListener {
+        public void someEvent(String s);
+    }
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    onSomeEventListener someEventListener;
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            someEventListener = (onSomeEventListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement onSomeEventListener");
+        }
+    }
 
     public static String LOG_TAG = "my_log";
 
@@ -39,85 +59,85 @@ public class _Fragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment__, container, false);
         ListView listView = (ListView) view.findViewById(R.id.list_user);
 
-        new ProgressTask().execute();
         listView.setAdapter(tradeListAdapter);
 
+        int count_list = 0;
+        SQLiteDatabase db_trades = tradesDbManager.getWritableDatabase();
+        String[] pairListForLink = getResources().getStringArray(R.array.pairListForLink);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setColorSchemeResources(
+                R.color.blue_swipe, R.color.green_swipe,
+                R.color.orange_swipe, R.color.red_swipe);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                try {
+                    //someEventListener.someEvent("Test text from SwipeRefresh");
+                    //new ProgressTask().execute();
+
+                    Cursor c = db_trades.query(pairListForLink[0],null,null,null,null,null,null,null);
+                    if (c.moveToLast()){
+                        //if (c.moveToPosition(20)){
+                        //получаем индексы
+                        int table_trade_id  = c.getColumnIndex("TABLE_TRADE_ID");
+                        int table_type      = c.getColumnIndex("TABLE_TYPE");
+                        int table_price     = c.getColumnIndex("TABLE_PRICE");
+                        int table_quantity  = c.getColumnIndex("TABLE_QUANTITY");
+                        int table_amount    = c.getColumnIndex("TABLE_AMOUNT");
+                        int table_date      = c.getColumnIndex("TABLE_DATE");
+
+                        do {
+                            count_list++;
+                            // получаем значения по номерам столбцов и пишем все в лог
+                            Log.d(LOG_TAG,
+                                    "User_FR_table_trade_id = "     + c.getInt(table_trade_id) +
+                                            ", table_type = "    + c.getString(table_type) +
+                                            ", table_quantity = "    + c.getString(table_quantity) +
+                                            ", table_price = "    + c.getString(table_price));
+                            // переход на следующую строку
+                            // а если следующей нет (текущая - последняя), то false - выходим из цикла
+
+                            String   TABLE_TRADE_ID = c.getString(table_trade_id);
+                            String   TABLE_TYPE = c.getString(table_type);
+                            String   TABLE_PRICE = c.getString(table_price);
+                            //Double   TABLE_QUANTITY = c.getDouble(table_quantity);
+                            String   TABLE_QUANTITY = c.getString(table_quantity);
+                            Double   TABLE_AMOUNT = c.getDouble(table_amount);
+                            Integer  TABLE_DATE = c.getInt(table_date);
+
+//                            tradeFullArray.add(new TradeFullDataBase(
+//                                    TABLE_TRADE_ID,
+//                                    TABLE_TYPE,
+//                                    TABLE_PRICE,
+//                                    TABLE_QUANTITY,
+//                                    TABLE_AMOUNT,
+//                                    TABLE_DATE
+//                            ));
+                            if (count_list <= 15)
+                            {
+                                tradeFullArray.add(new Product(
+                                        TABLE_TRADE_ID,
+                                        TABLE_TYPE,
+                                        //TABLE_PRICE
+                                        TABLE_QUANTITY
+                                ));
+                            }  else return tradeFullArray;
+                        } while (c.moveToPrevious());
+                        //} while (c.moveToPosition(2));
+                    } else
+                        Log.d(LOG_TAG, "0 rows");
+                    c.close();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         return view;
     }
 
-    private class ProgressTask extends AsyncTask<Void, Void, String> {
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
-        String resultJson = "";
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            try {
-                String waitStr = getResources().getString(R.string.waitStr);
-                waitArray.add(new Product(waitStr,null,null));
-                tradeListAdapter =  new TradeListAdapter(getActivity(),waitArray);
-            }catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-        @Override
-        protected String doInBackground(Void... params) {
-            try {
-                URL url = new URL("https://api.exmo.com/v1/trades/?pair=BTC_USD");
-
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-
-                resultJson = buffer.toString();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return resultJson;
-        }
-
-        @Override
-        protected void onPostExecute(String strJson) {
-            super.onPostExecute(strJson);
-            Log.d(LOG_TAG, "Весь текст: " + strJson);
-
-
-                try {
-                    JSONObject dataJsonObj = new JSONObject(strJson);
-                    JSONArray friends = dataJsonObj.getJSONArray("BTC_USD");
-
-                    for (int j=0; j < 20; j++) {
-                        JSONObject lastTrans = friends.getJSONObject(j);
-                        String typeTr = lastTrans.getString("type");
-                        Log.d(LOG_TAG, "Тип транзакции: " + typeTr);
-                        String priceTr = lastTrans.getString("price");
-                        Log.d(LOG_TAG, "Тип транзакции: " + priceTr);
-                        coinArray.add(new Product("BTC_USD",typeTr,priceTr));
-                    }
-                    ListView listView = (ListView)getView().findViewById(R.id.list_user);
-                    tradeListAdapter = new TradeListAdapter(getActivity(), coinArray);
-                    listView.setAdapter(tradeListAdapter);
-
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }
 /**
 {"BTC_USD":[

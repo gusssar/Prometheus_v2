@@ -29,8 +29,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import gusssar.prometheus.UserFragment.onSomeEventListener;
+import gusssar.prometheus._Fragment.onSomeEventListener;
 import android.app.Fragment;
 import android.widget.Toast;
 
@@ -40,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
     public String setUrl = "";
     public ArrayList<TradeFullDataBase> tradeFullArray = new ArrayList<>();
     TradesDbManager tradesDbManager;
-    private Handler handler = new Handler();
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -65,11 +66,13 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
                     return true;
                 case R.id.navigation_:
                     transaction.replace(R.id.main_frag, new _Fragment()).commit();
+                    someEvent("push");
                     //textView.setText(R.string.title_);
                     Log.d(LOG_TAG, "MainActivity ___");
                     return true;
                 case R.id.navigation_user:
                     transaction.replace(R.id.main_frag, new UserFragment()).commit();
+                    someEvent("push");
                     //textView.setText(R.string.title_user);
                     Log.d(LOG_TAG, "MainActivity user");
                     return true;
@@ -85,27 +88,37 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
         setContentView(R.layout.activity_main);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        //ProgressBar progBarMain = (ProgressBar)findViewById(R.id.prog_bar_main);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        //new TradesTask().execute();
+
 
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.add(R.id.main_frag, new TradesFragment()).commit();
         }
-        //tradesDbManager = new TradesDbManager(this);
-        ////new Timer().schedule(new RepeatTimerTask(),0,10000);
-        //        new TradesTask().execute();
     }
+
+    /**Периодическое обновление базы*/
+
+    //public class Stopwatch {
+    //    public void main(String[] args) {
+    //        for(int i = 1; i < 60; i++) {
+    //            System.out.println(i);
+    //            TimeUnit.SECONDS.sleep(1);
+    //        }
+    //    }
+    //}
+
 
     @Override
     public void someEvent(String s) {
         Toast.makeText(this,s,Toast.LENGTH_SHORT).show();
             tradesDbManager = new TradesDbManager(this);
                 new TradesTask().execute();
-        //Fragment frag1 = getFragmentManager().findFragmentById(R.id.fragment1);
-        //((TextView)frag1.getView().findViewById(R.id.textView)).setText("Text from Fragment 2:" + s);
     }
+    /**--------------*/
 
     private class TradesTask extends AsyncTask<Void, Integer, ArrayList> {
 
@@ -141,8 +154,8 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
                     //    }
             //ContentValues cv_trades = new ContentValues();
             try {
-                //for (int p=0; p <= 52; p++) {
-                for (int p=0; p <= 2; p++) {
+                for (int p=0; p <= 52; p++) {
+                //for (int p=0; p <= 2; p++) {
                     setUrl = pairLink + pairListForLink[p];
                     URL url = new URL(setUrl);
                     urlConnection = (HttpURLConnection) url.openConnection();
@@ -166,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
                     JSONArray fullTradesArr = dataJsonObj.getJSONArray(pairListForLink[p]);
 
 
-                   for (int i = 0; i < 10; i++) {
+                   for (int i = 0; i < 50; i++) {
                     //for (int i = 0; i <= 2; i++) {
                        JSONObject lineTrades = fullTradesArr.getJSONObject(i);
                        Integer idTr = lineTrades.getInt("trade_id");
@@ -206,6 +219,8 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
             //Toast.makeText(this,"s",Toast.LENGTH_SHORT).show();
             try {
                 progBarMain.setVisibility(ProgressBar.INVISIBLE);
+                //TimeUnit.SECONDS.sleep(10);
+                new TradesTask().execute();
             }catch (Exception e) {
                 e.printStackTrace();
             }
@@ -228,9 +243,9 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
         super.onSaveInstanceState(outState);
         Log.d(LOG_TAG, "onSaveInstanceState");
     }
-//
-//
-//
+
+
+
 //public class RepeatTimerTask extends TimerTask {
 //    private Runnable runnable = new Runnable() {
 //        public void run() {
@@ -244,6 +259,8 @@ public class MainActivity extends AppCompatActivity implements onSomeEventListen
 //}
 
 }
+
+
 class TradeFullDataBase {
 
     Integer TABLE_TRADE_ID;
